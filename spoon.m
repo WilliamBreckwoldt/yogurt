@@ -91,13 +91,9 @@ uiSettings = uicontrol(...
 	% The request is 5 parts in 40 bytes, shown as PART NAME (BYTES USED):
 	% Version Number (4), Username (8), Password (8), IP Address (16), Command (4).
 
-	disp('---')
-	disp('NEW SPOON REQUEST')
 
 	%VERSION NUMBER
 	%spoonVersion should already be in the correct form.
-	disp('VERSION:')
-	disp(spoonVersion)
 
 	%USERNAME
 	usernameMaxLength = 8;%Changing this will require changes in the Spoon to Lid protocol.
@@ -128,8 +124,6 @@ uiSettings = uicontrol(...
 	else
 		errorMessage('INVALID USERNAME',{'Your Username contained invalid characters.','Valid Characters:',char(validCharacterNumbers)})
 	end
-	disp('USERNAME:')
-	disp(spoonUsername)
 
 	%PASSWORD
 	passwordMaxLength = 8;%Changing this will require changes in the Spoon to Lid protocol.
@@ -159,8 +153,6 @@ uiSettings = uicontrol(...
 	else
 		errorMessage('INVALID PASSWORD',{'Your Password contained invalid characters.','Valid Characters:',char(validCharacterNumbers)})
 	end
-	disp('PASSWORD:')
-	disp(spoonPassword)
 
 	%IP ADDRESS
 	IPL = length(connectionIP);
@@ -169,23 +161,16 @@ uiSettings = uicontrol(...
 	else
 		errorMessage('INVALID IP ADDRESS',{'The IP Address you are trying to connect to appears to be too long.','Attempted IP Address:',connectionIP})
 	end
-	disp('IP ADDRESS:')
-	disp(spoonConnectionIP)
 
 	%COMMAND
 	%spoonCommand should already be in the correct form.
-	disp('COMMAND:')
-	disp(spoonCommand)
 
 
 	sendString = [spoonVersion,spoonUsername,spoonPassword,spoonConnectionIP,spoonCommand];
-	disp('SEND STRING:')
-	disp(sendString)
 	if length(sendString) == 40
-		disp('CONNECTION ATTEMPT')
-		spoonLid = tcpip(connectionIP, str2num(connectionPort), 'NetworkRole', 'Client')
-		fopen(spoonLid)
-		fread(spoonLid,1)
+		spoonLid = tcpip(connectionIP, str2num(connectionPort), 'NetworkRole', 'Client');
+		fopen(spoonLid);
+		fread(spoonLid,1);
 		fwrite(spoonLid,uint8(sendString),'uint8')
 		pause(0.1)
 
@@ -237,9 +222,9 @@ uiSettings = uicontrol(...
 %The default values mean 'create a new account' and 'login with this account'
 	function toggleNew(~,~)
 		if get(uiNewSpoon,'Value')%Value of the checkbox, this will be 1 if 'NEW' is checked
-			spoonCommand = 'NSPN' %New SPooN
+			spoonCommand = 'NSPN'; %New SPooN
 		else
-			spoonCommand = 'LOGN' %LOGiN
+			spoonCommand = 'LOGN'; %LOGiN
 		end
 
 	end%toggleNew
@@ -346,7 +331,7 @@ end
 delete(gameFigure)
 
 function gameInput(~,evt)
-	keyIn = evt.Key
+	keyIn = char(evt.Key);
 	if strcmp(keyIn,'escape')
 		sendCommand('EXIT')
 	elseif strcmp(keyIn,'w') || strcmp(keyIn,'uparrow')
@@ -363,6 +348,7 @@ end
 
 function gameClose(~,~)
 	gameRun = 0;
+	sendCommand('EXIT')
 end
 
 

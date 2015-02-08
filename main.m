@@ -678,7 +678,6 @@ reductionInterval = 5;
 rI = reductionInterval;%Just making it shorter
 tic;
 %% YEAST LOOP
-qq = 0;
 fileWrite(fid,'Yeast Loop')
 while yeastRun
     
@@ -687,7 +686,6 @@ while yeastRun
     %SEND OUT BOARD
     pause(0.02)
 
-    qq = qq + 1;
     for s = connectionPorts(connectionPorts ~= 0)
         
         blankBoard = blankBlankBoard;
@@ -710,9 +708,6 @@ while yeastRun
 
     for s = connectionPorts(connectionPorts ~= 0)
         fwrite(yeastSpoon{s}, BOARD(1:boardSize*boardSize), 'uint8')
-        if mod(qq,1000) == 0
-            fileWrite(fid,['DATA SENT TO ',num2str(s)])
-        end
     end
 
     %MOVE MONSTER
@@ -726,13 +721,7 @@ while yeastRun
         if ~isempty(kickingSpoons)
             for s = kickingSpoons
                 fileWrite(fid, sprintf('SPOON %d IS INACTIVE',s))
-                fclose(yeastSpoon{s})
-                fileWrite(fid, sprintf('SPOON %d HAS BEEN DISCONNECTED',s))
-                connectionPorts(s) = 0;
-                numPlayers = numPlayers - 1;
-                fwrite(yeastYogurt, numPlayers,'uint8')
-                fwrite(yeastLid, s,'uint8')
-                pingLid();
+                disconnectSpoon(s)
             end
         end
     end%Activity Check Stuff
@@ -775,24 +764,23 @@ fclose(fid);
         if spoonActivity(n) < activityBump
             spoonActivity(n) = activityBump;
         end
-        fileWrite(fid, sprintf('SPOON%d COMMAND RECEIVED', n))
 
         command = char(fread(src,[1,4]))
         move = [0,0];
         if strcmp(command, 'EXIT')
-            fileWrite(fid, 'DISCONNECTION COMMAND')
-
+            fileWrite(fid, sprintf('SPOON %d DISCONNECTION COMMAND', n))
+            disconnectSpoon(n)
         elseif strcmp(command,'MU##')
-            fileWrite(fid, 'MOVE UP COMMAND')
+            fileWrite(fid, sprintf('SPOON %d MOVE UP COMMAND', n))
             move = [1,0];
         elseif strcmp(command,'MD##')
-            fileWrite(fid, 'MOVE DOWN COMMAND')
+            fileWrite(fid, sprintf('SPOON %d MOVE DOWN COMMAND', n))
             move = [-1,0];
         elseif strcmp(command,'ML##')
-            fileWrite(fid, 'MOVE LEFT COMMAND')
+            fileWrite(fid, sprintf('SPOON %d MOVE LEFT COMMAND', n))
             move = [0,-1];
         elseif strcmp(command,'MR##')
-            fileWrite(fid, 'MOVE RIGHT COMMAND')
+            fileWrite(fid, sprintf('SPOON %d MOVE RIGHT COMMAND', n))
             move = [0,1];
         end
 
@@ -801,6 +789,16 @@ fclose(fid);
             positions(n,:) = newPosition;
         end
 
+    end
+
+    function disconnectSpoon(spoonNumber)
+        fclose(yeastSpoon{spoonNumber})
+        connectionPorts(spoonNumber) = 0;
+        numPlayers = numPlayers - 1;
+        fwrite(yeastYogurt, numPlayers,'uint8')
+        fwrite(yeastLid, spoonNumber,'uint8')
+        pingLid();
+        fileWrite(fid, sprintf('SPOON %d HAS BEEN DISCONNECTED',s))
     end
 
     function yeastYogurtCall(~,~)
