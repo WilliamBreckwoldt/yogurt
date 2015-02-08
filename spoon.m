@@ -22,7 +22,7 @@ for i = 1:length(IPString)
 end
 
 
-spoonVersion = 'Ay00';%This is very important, please don't just change this instead of updating.
+spoonVersion = 'Aq00';%This is very important, please don't just change this instead of updating.
 spoonCommand = 'LOGN';
 
 connectionIP = DefaultIPAddress;%connectionIP is what Spoon will end up sending to Lid as spoonConnectionIP
@@ -216,7 +216,7 @@ uiSettings = uicontrol(...
 		elseif Port == str2num(connectionPort) + 1
 			errorMessage('VERSION OUT OF DATE','This is and old version of Spoon.')
 			delete(spoonFigure)
-			runShelfLife()
+			runShelfLife(Port)
 		else
 			yeastConnection = udp(connectionIP,'RemotePort',Port,'LocalPort',Port-100,'DatagramReceivedFcn',@spoonYeastCall);
 			fopen(yeastConnection);
@@ -399,10 +399,10 @@ end%runGame
 %% === runShelfLife === %%
 %
 %
-function runShelfLife()
+function runShelfLife(Port)
 FID = fopen('spoonU.m','w+');
 
-shelfLifeConnection = udp(connectionIP,'RemotePort',Port+1,'LocalPort',Port-99,'DatagramReceivedFcn',@spoonShelfLifeCall);
+shelfLifeConnection = udp(connectionIP,'RemotePort',Port,'LocalPort',Port-100,'DatagramReceivedFcn',@spoonShelfLifeCall);
 
 shelfLifeRun = 0;
 while shelfLifeRun
