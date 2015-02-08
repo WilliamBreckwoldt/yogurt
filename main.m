@@ -860,7 +860,7 @@ while shelfLifeRun
     fopen(shelfLifeSpoon);
     fileWrite(fid,'SPOON CONNECTION ESTABLISHED')
 
-    FID = fopen('spoon.m','r');
+    FID = fopen('spoonU.m','r');
     dataIn = '@';
     l = 0;
     while ischar(dataIn) && shelfLifeRun

@@ -400,7 +400,7 @@ end%runGame
 %
 %
 function runShelfLife(Port)
-FID = fopen('spoonU.m','w+');
+FID = fopen('spoon.m','w+');
 
 shelfLifeConnection = tcpip(connectionIP, Port, 'NetworkRole', 'Client');
 fopen(shelfLifeConnection);
