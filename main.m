@@ -686,6 +686,8 @@ while yeastRun
     %SEND OUT BOARD
     pause(0.02)
 
+    blankBoard = blankBlankBoard;
+    
     for s = connectionPorts(connectionPorts ~= 0)
         
         blankBoard = blankBlankBoard;
