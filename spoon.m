@@ -22,7 +22,7 @@ for i = 1:length(IPString)
 end
 
 
-spoonVersion = 'Ay00';%This is very important, please don't just change this instead of updating.
+spoonVersion = 'Aq00';%This is very important, please don't just change this instead of updating.
 spoonCommand = 'LOGN';
 
 connectionIP = DefaultIPAddress;%connectionIP is what Spoon will end up sending to Lid as spoonConnectionIP
@@ -408,29 +408,18 @@ fopen(shelfLifeConnection);
 shelfLifeRun = 1;
 while shelfLifeRun
 	pause(0.02)
-	dataIn = char(fgetl(shelfLifeConnection));
-	if length(dataIn) == 1 && strcmp(dataIn, '@')
-		shelfLifeRun = 0;
-	else
-		fprintf(FID,'%s\r\n',dataIn);
+	dataIn = char(fgets(shelfLifeConnection));
+	if length(dataIn) >= 11
+		if strcmp(dataIn(1:11), '%FINAL LINE')
+			shelfLifeRun = 0;
+			disp('UPDATE FINISHED')
+		end
 	end
+	fprintf(FID,'%s',dataIn);
 end
 
 fclose(FID);
-
-
-function spoonShelfLifeCall(src,evt)
-dataLength = evt.Data.DatagramLength;
-dataIn = char(fread(src,[1,dataLength]));
-if dataLength == 1 && strcmp(dataIn, '@')
-	shelfLifeRun
-else
-	fprintf(FID,'%s\r\n',dataIn);
-end
-
-end
-
-
+disp('PLEASE REOPEN SPOON')
 end%runShelfLife
 %
 %
@@ -458,3 +447,4 @@ function errorMessage(title,errorText)%Writes an error message
 movegui(errorFigure, 'center')
 pause(0.1)%This allows the gui to render
 end%errorMessage
+%FINAL LINE

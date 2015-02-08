@@ -263,7 +263,7 @@ while managingLogs
     readLogs();
 
     %LID PING
-    if toc > 180 && yogurtIsConnected %|| (toc > 20 && pingStart)
+    if toc > 180 && yogurtIsConnected
         fileWrite(fid, 'PINGING LID')
         %pingStart = 1;
         pingLid();
@@ -313,7 +313,7 @@ while managingLogsClosing
         fileWrite(fid,'JOB HAS ENDED')
         fileWrite(fid,'YOGURT CAN NOW BE CLOSED')
     end
-    pause(0.25)
+    pause(0.05)
     readLogs();
 end
 
@@ -336,12 +336,14 @@ delete(yogurtFigure)
         end
     end
 
+
     function yogurtYeastCall(~,~)
         fileWrite(fid, 'CONTACT FROM YEAST')
         numberOfPlayers = fread(yogurtYeast,1);
         set(uiUsersDisplay,'String',sprintf('CONNECTED USERS: %d',numberOfPlayers))
         fileWrite(fid, sprintf('CONNECTED USERS: %d',numberOfPlayers))
     end
+
 
     function pingLid()
         lidPing = tcpip(IPAddress, Port, 'NetworkRole', 'Client');
@@ -352,14 +354,26 @@ delete(yogurtFigure)
         delete(lidPing);
     end
 
+
+    function pingShelfLife()
+        fileWrite(fid,'PINGING SHELFLIFE')
+        shelfLifePing = tcpip(IPAddress, Port+1, 'NetworkRole', 'Client');
+        fopen(shelfLifePing);
+        fclose(shelfLifePing);
+        delete(shelfLifePing);
+        fileWrite(fid,'SHELFLIFE PING COMPLETE')
+    end
+
+
     function endYogurt()
         if yogurtIsConnected
             %TELL THREADS TO CLOSE
             fileWrite(fid,'SENDING THREAD CLOSE ORDER')
             fwrite(yogurtLid,0,'uint8')
+            pingLid();%Ping Lid to ensure it recieves close command
             fwrite(yogurtYeast,0,'uint8')
             fwrite(yogurtShelfLife,0,'uint8')
-            pingLid();%Ping Lid to ensure it recieves close command
+            pingShelfLife();%Ping ShelfLife to ensure it recieves close command
             set(uiDisconnectPushbutton, 'Enable', 'off');
         else
             fileWrite(fid,'INTERNAL CONNECTIONS NOT ESTABLISHED')
@@ -367,11 +381,13 @@ delete(yogurtFigure)
         end
     end%endYogurt
 
+
     function closeYogurtFigure(src)
         if jobEnded %This function will only close the figure if the yogurtJob is finished.
             managingLogsClosing = 0;
         end
     end%closeYogurtFigure
+
 
     function logWrite(logNumber,inputString)
         maxLogLength = 100;
@@ -385,6 +401,7 @@ delete(yogurtFigure)
         end
 
     end%logWrite
+
 
 end%createYogurt
 
@@ -689,18 +706,6 @@ while yeastRun
 
     for s = connectionPorts(connectionPorts ~= 0)
         
-%        while positions(s,x) == 0 || positions(s,y) == 0
-%            fileWrite(fid,'FIXING POSITION 1')
-%            testPosition = randi(boardSize,[1,2]);
-%            fileWrite(fid,'FIXING POSITION 2')
-%            if BOARD(testPosition(x),testPosition(y)) == 0
-%                fileWrite(fid,'FIXING POSITION 3')
-%                positions(s,x) = testPosition(x);
-%                positions(s,y) = testPosition(y);
-%                fileWrite(fid,'FIXING POSITION 4')
-%            end
-%            fileWrite(fid,'FIXING POSITION 5')
-%        end
         blankBoard(positions(s,x),positions(s,y)) = s;
     end
 
@@ -800,7 +805,7 @@ fclose(fid);
         fwrite(yeastYogurt, numPlayers,'uint8')
         fwrite(yeastLid, spoonNumber,'uint8')
         pingLid();
-        fileWrite(fid, sprintf('SPOON %d HAS BEEN DISCONNECTED',s))
+        fileWrite(fid, sprintf('SPOON %d HAS BEEN DISCONNECTED', s))
     end
 
     function yeastYogurtCall(~,~)
@@ -819,7 +824,6 @@ fclose(fid);
         delete(lidPing);
         fileWrite(fid,'LID PING COMPLETE')
     end
-
 end
 %
 %%==== END YEAST ====%%
@@ -859,13 +863,14 @@ while shelfLifeRun
     FID = fopen('spoon.m','r');
     dataIn = '@';
     l = 0;
-    while ischar(dataIn)
+    while ischar(dataIn) && shelfLifeRun
         pause(0.05)
         l = l + 1;
-        dataIn = fgetl();
-        fileWrite(fid,sprintf('LINE %d READ',l))
+        if mod(l,5) == 0
+            fileWrite(fid,sprintf('LINE %d READ',l))
+        end
+        dataIn = fgets(FID);
         if ~ischar(dataIn)
-            dataIn = '@';
             fileWrite(fid,'END OF FILE REACHED')
         end
         fwrite(shelfLifeSpoon, dataIn, 'uint8');
@@ -890,7 +895,7 @@ fclose(fid);
 
 %INTERNAL SUBFUNCTIONS
 
-    function shelfLifeYogurtCall
+    function shelfLifeYogurtCall(~,~)
         fileWrite(fid, 'CLOSE ORDER RECEIVED')
         shelfLifeRun = 0;
     end
