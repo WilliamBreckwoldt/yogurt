@@ -403,7 +403,7 @@ function runShelfLife(Port)
 FID = fopen('spoonU.m','w+');
 
 shelfLifeConnection = tcpip(connectionIP, Port, 'NetworkRole', 'Client');
-fopen(spoonLid);
+fopen(shelfLifeConnection);
 
 shelfLifeRun = 1;
 while shelfLifeRun
