@@ -753,7 +753,7 @@ fclose(fid);
         fileWrite(fid,num2str(connectionNumber))
 
         yeastSpoon{connectionNumber} = udp(spoonIPAssignment,'RemotePort',spoonPortAssignment-100,'LocalPort',spoonPortAssignment, 'Name', sprintf('yeastSpoon%d',connectionNumber),'DatagramReceivedFcn',@(src,evt)yeastSpoonCall(src,evt,connectionNumber));
-        fopen(yeastSpoon{connectiosrvnNumber});
+        fopen(yeastSpoon{connectionNumber});
         connectionPorts(connectionNumber) = connectionNumber;
         numPlayers = numPlayers + 1;
         spoonActivity(connectionNumber) = activityStart;
