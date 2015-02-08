@@ -847,6 +847,35 @@ fopen(shelfLifeYogurt)
 
 fileWrite(fid,'INTERNAL CONNECTIONS ESTABLISHED')
 
+shelfLifeRun = 1;
+shelfLifeSpoon = tcpip('0.0.0.0', Port, 'NetworkRole', 'Server','Name','shelfLifeSpoon')
+while shelfLifeRun
+    fileWrite(fid,[])
+    fileWrite(fid,'WAITING FOR SPOON')
+    pause(0.01)
+    fopen(shelfLifeSpoon);
+    fileWrite(fid,'SPOON CONNECTION ESTABLISHED')
+
+    FID = fopen('spoon.m','r');
+    dataIn = '@';
+    l = 0;
+    while ischar(dataIn)
+        l = l + 1;
+        dataIn = fgetl();
+        fileWrite(fid,sprintf('LINE %d READ',l))
+        if ~ischar(dataIn)
+            dataIn = '@';
+            fileWrite(fid,'END OF FILE REACHED')
+        end
+        fwrite(shelfLifeSpoon, dataIn, 'uint8');
+    end
+
+    fclose(FID);
+    fclose(shelfLifeSpoon);
+
+end
+
+
 fileWrite(fid,'CLOSING INTERNAL CONNECTIONS')
 
 fclose(shelfLifeLid);
@@ -862,7 +891,7 @@ fclose(fid);
 
     function shelfLifeYogurtCall
         fileWrite(fid, 'CLOSE ORDER RECEIVED')
-        %shelfLifeRun = 0;
+        shelfLifeRun = 0;
     end
 
 end%runShelfLife
