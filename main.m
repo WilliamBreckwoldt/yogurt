@@ -710,6 +710,7 @@ while yeastRun
     for s = connectionPorts(connectionPorts ~= 0)
         fwrite(yeastSpoon{s}, s, 'uint8');
         fwrite(yeastSpoon{s}, BOARD(1:boardSize*boardSize), 'uint8');
+
     end
 
     %MOVE MONSTER

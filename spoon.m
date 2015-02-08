@@ -6,8 +6,15 @@ function spoon %BECAUSE FORKS ARE DUMB
 
 %% SET SOME DEFAULT SHIT
 
+defaultUsername = 'Nixon';
+defaultPassword = 'checkers';
+
 DefaultIPAddress = '129.22.145.35';
 DefaultPort = 51743;
+
+systemInfo = instrhwinfo('tcpip');
+spoonIP = systemInfo.LocalHost{1};
+
 
 spoonVersion = 'Ay00';%This is very important, please don't just change this instead of updating.
 spoonCommand = 'LOGN';
@@ -57,11 +64,11 @@ settingDefault{3} = 'strawberry';
 uiUsername = uicontrol(...
     'Style', 'edit',...
     'Position', [1,buttonHeight+inputHeight+1,100,inputHeight],...
-    'String', ['test']);
+    'String', defaultUsername);
 uiPassword = uicontrol(...
     'Style', 'edit',...
     'Position', [101,buttonHeight+inputHeight+1,100,inputHeight],...
-    'String', ['123']);
+    'String', defaultPassword);
 uiUsernameLabel = uicontrol(...
     'Style', 'text',...
     'Position', [1,buttonHeight+2*inputHeight+1,100,labelHeight],...
@@ -161,11 +168,11 @@ uiSettings = uicontrol(...
 	end
 
 	%IP ADDRESS
-	IPL = length(connectionIP);
+	IPL = length(spoonIP);
 	if IPL <= 15
-		spoonConnectionIP = [connectionIP,char(zeros(1,16-IPL)+35)];
+		spoonConnectionIP = [spoonIP,char(zeros(1,16-IPL)+35)];
 	else
-		errorMessage('INVALID IP ADDRESS',{'The IP Address you are trying to connect to appears to be too long.','Attempted IP Address:',connectionIP})
+		errorMessage('INVALID IP ADDRESS',{'The IP Address you are trying to connect to appears to be too long.','Attempted IP Address:',spoonIP})
 	end
 
 	%COMMAND
