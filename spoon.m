@@ -13,7 +13,13 @@ DefaultIPAddress = '129.22.145.35';
 DefaultPort = 51743;
 
 systemInfo = instrhwinfo('tcpip');
-spoonIP = systemInfo.LocalHost{1};
+IPString = systemInfo.LocalHost{1};
+spoonIP = [];
+for i = 1:length(IPString)
+    if strcmp('/',IPString(i))
+        spoonIP = IPString(i+1:length(IPString));
+    end
+end
 
 
 spoonVersion = 'Ay00';%This is very important, please don't just change this instead of updating.
@@ -408,6 +414,12 @@ fclose(FID);
 
 function spoonShelfLifeCall(src,evt)
 dataLength = evt.Data.DatagramLength;
+dataIn = char(fread(src,[1,dataLength]));
+if dataLength == 1 && strcmp(dataIn, '@')
+	shelfLifeRun
+else
+	fprintf(FID,'%s\r\n',dataIn);
+end
 
 end
 

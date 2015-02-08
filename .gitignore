@@ -14,8 +14,9 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 
-# yogurt Log Files
+# yogurt Files
 *.log
+*.asv
 
 # =========================
 # Operating System Files
