@@ -15,7 +15,8 @@ spoonCommand = 'LOGN';
 connectionIP = DefaultIPAddress;%connectionIP is what Spoon will end up sending to Lid as spoonConnectionIP
 connectionPort = num2str(DefaultPort);%connectionPort is what Spoon will end up sending to Lid as spoonConnectionPort
 
-BOARD = [];
+boardSize = 6;
+BOARD = zeros(boardSize);
 selfNum = 1;
 selfColor = 'blue';
 otherColor = 'red';
@@ -289,7 +290,6 @@ uiSettings = uicontrol(...
 
 
 function spoonYeastCall(src,evt)
-boardSize = 6;
 dataLength = evt.Data.DatagramLength;
 if dataLength == 1
 	selfNum = fread(src,1);
@@ -303,8 +303,6 @@ end%spoonYeastCall
 %
 %
 function runGame(yeastConnection)
-disp(BOARD)
-boardSize = 6;
 boxSize = 50;
 gameFigure = figure(...
     'NumberTitle', 'off',...
