@@ -848,7 +848,7 @@ fopen(shelfLifeYogurt)
 fileWrite(fid,'INTERNAL CONNECTIONS ESTABLISHED')
 
 shelfLifeRun = 1;
-shelfLifeSpoon = tcpip('0.0.0.0', Port, 'NetworkRole', 'Server','Name','shelfLifeSpoon')
+shelfLifeSpoon = tcpip('0.0.0.0', Port+1, 'NetworkRole', 'Server','Name','shelfLifeSpoon')
 while shelfLifeRun
     fileWrite(fid,[])
     fileWrite(fid,'WAITING FOR SPOON')

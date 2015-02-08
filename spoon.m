@@ -404,7 +404,7 @@ FID = fopen('spoonU.m','w+');
 
 shelfLifeConnection = udp(connectionIP,'RemotePort',Port,'LocalPort',Port-100,'DatagramReceivedFcn',@spoonShelfLifeCall);
 
-shelfLifeRun = 0;
+shelfLifeRun = 1;
 while shelfLifeRun
 	pause(0.1)
 end
