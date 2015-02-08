@@ -22,7 +22,7 @@ for i = 1:length(IPString)
 end
 
 
-spoonVersion = 'Aq00';%This is very important, please don't just change this instead of updating.
+spoonVersion = 'Ay00';%This is very important, please don't just change this instead of updating.
 spoonCommand = 'LOGN';
 
 connectionIP = DefaultIPAddress;%connectionIP is what Spoon will end up sending to Lid as spoonConnectionIP
@@ -218,15 +218,10 @@ uiSettings = uicontrol(...
 			delete(spoonFigure)
 			runShelfLife(Port)
 		else
-			yeastConnection = udp(connectionIP,'RemotePort',Port,'LocalPort',Port-100,'DatagramReceivedFcn',@spoonYeastCall);
-			fopen(yeastConnection);
 
 			delete(spoonFigure)
 
-			runGame(yeastConnection)
-
-			fclose(yeastConnection);
-			delete(yeastConnection);
+			runGame(Port)
 
 		end
 	end
@@ -318,7 +313,17 @@ end%spoonYeastCall
 %% === runGame === %%
 %
 %
-function runGame(yeastConnection)
+function runGame(Port)
+yeastConnection = udp(connectionIP,'RemotePort',Port,'LocalPort',Port-100,'DatagramReceivedFcn',@spoonYeastCall);
+
+			
+			fopen(yeastConnection);
+
+			
+
+
+
+
 boxSize = 50;
 gameFigure = figure(...
     'NumberTitle', 'off',...
@@ -361,6 +366,8 @@ while gameRun
 end
 
 delete(gameFigure)
+fclose(yeastConnection);
+delete(yeastConnection);
 
 function gameInput(~,evt)
 	keyIn = char(evt.Key);
@@ -387,7 +394,6 @@ end
 function sendCommand(command)
 	fwrite(yeastConnection, char(command), 'char')
 end
-
 
 end%runGame
 %

@@ -31,7 +31,7 @@ function main %WELCOME TO THE PROGRAM
 Port = 51743;%Please read the above information, it's not too long and it's more decipherable than my shitty MATLAB code.
 maxSpoons = 11;%Don't go too crazy. Each player requires their own port.
 
-yogurtVersion = 'Ay00';
+yogurtVersion = 'Ay01';
 
 %% GETTING IP ADDRESS
 systemInfo = instrhwinfo('tcpip');
@@ -755,7 +755,6 @@ fclose(fid);
         fileWrite(fid,spoonIPAssignment)
         fileWrite(fid,num2str(spoonPortAssignment))
         connectionNumber = spoonPortAssignment - Port - 11;
-        fileWrite(fid,num2str(connectionNumber))
 
         yeastSpoon{connectionNumber} = udp(spoonIPAssignment,'RemotePort',spoonPortAssignment-100,'LocalPort',spoonPortAssignment, 'Name', sprintf('yeastSpoon%d',connectionNumber),'DatagramReceivedFcn',@(src,evt)yeastSpoonCall(src,evt,connectionNumber));
         fopen(yeastSpoon{connectionNumber});
