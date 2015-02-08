@@ -22,7 +22,7 @@ for i = 1:length(IPString)
 end
 
 
-spoonVersion = 'Aq00';%This is very important, please don't just change this instead of updating.
+spoonVersion = 'Ay00';%This is very important, please don't just change this instead of updating.
 spoonCommand = 'LOGN';
 
 connectionIP = DefaultIPAddress;%connectionIP is what Spoon will end up sending to Lid as spoonConnectionIP
