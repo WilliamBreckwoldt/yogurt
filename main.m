@@ -687,10 +687,9 @@ while yeastRun
     pause(0.02)
 
     blankBoard = blankBlankBoard;
-    
+
     for s = connectionPorts(connectionPorts ~= 0)
         
-        blankBoard = blankBlankBoard;
 %        while positions(s,x) == 0 || positions(s,y) == 0
 %            fileWrite(fid,'FIXING POSITION 1')
 %            testPosition = randi(boardSize,[1,2]);
