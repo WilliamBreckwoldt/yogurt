@@ -7,7 +7,7 @@ function spoon %BECAUSE FORKS ARE DUMB
 %% SET SOME DEFAULT SHIT
 
 DefaultIPAddress = '129.22.145.35';
-DefaultPort = 50743;
+DefaultPort = 51743;
 
 spoonVersion = 'Ay00';%This is very important, please don't just change this instead of updating.
 spoonCommand = 'LOGN';
@@ -16,6 +16,10 @@ connectionIP = DefaultIPAddress;%connectionIP is what Spoon will end up sending 
 connectionPort = num2str(DefaultPort);%connectionPort is what Spoon will end up sending to Lid as spoonConnectionPort
 
 BOARD = [];
+selfNum = 1;
+selfColor = 'blue';
+otherColor = 'red';
+emptyColor = 'white';
 
 %% CREATE GUI FIGURE
 labelHeight = 20;
@@ -284,9 +288,14 @@ uiSettings = uicontrol(...
 %%=== END settingsMenu ===%%
 
 
-function spoonYeastCall(src,~)
+function spoonYeastCall(src,evt)
 boardSize = 6;
-BOARD = fread(src,[boardSize,boardSize]);
+dataLength = evt.Data.DatagramLength;
+if dataLength == 1
+	selfNum = fread(src,1);
+else
+	BOARD = fread(src,[boardSize,boardSize]);
+end
 end%spoonYeastCall
 
 
@@ -313,6 +322,8 @@ for i = 1:boardSize;
 		gameBox(i,j) = uicontrol(...
 		    'Style', 'edit',...
 		    'Enable', 'Inactive',...
+		    'ForegroundColor', emptyColor,...
+		    'BackgroundColor', emptyColor,...
 		    'Position', [boxSize*(i-1)+1,boxSize*(j-1)+1,boxSize,boxSize],...
 		    'String', '0');
 	end
@@ -323,7 +334,14 @@ while gameRun
 	pause(0.01)
 	for i = 1:boardSize;
 		for j = 1:boardSize;
-			set(gameBox(i,j), 'String', num2str(BOARD(i,j)))
+				set(gameBox(i,j), 'String', num2str(BOARD(i,j)))
+			if BOARD(i,j) == selfNum
+				set(gameBox(i,j), 'BackgroundColor', selfColor)
+			elseif BOARD(i,j) == 0
+				set(gameBox(i,j), 'BackgroundColor', emptyColor)
+			else
+				set(gameBox(i,j), 'BackgroundColor', otherColor)
+			end
 		end
 	end
 end

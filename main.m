@@ -28,7 +28,7 @@ function main %WELCOME TO THE PROGRAM
 % delete(portObjects)
 % Please read the documentation on instrfindall and other port related functions.
 
-Port = 50743;%Please read the above information, it's not too long and it's more decipherable than my shitty MATLAB code.
+Port = 51743;%Please read the above information, it's not too long and it's more decipherable than my shitty MATLAB code.
 maxSpoons = 11;%Don't go too crazy. Each player requires their own port.
 
 yogurtVersion = 'Ay00';
@@ -665,8 +665,8 @@ blankBoard = uint8(zeros(boardSize));
 blankBlankBoard = uint8(zeros(boardSize));
 positions = randi(boardSize,[maxSpoons,2]);
 monster = [1,1];
-x = 2;
 y = 1;
+x = 2;
 % ^^^
 
 yeastSpoon = {};%Initialize this so we can have the subfunctions modify them.
@@ -707,7 +707,8 @@ while yeastRun
     BOARD = blankBoard;
 
     for s = connectionPorts(connectionPorts ~= 0)
-        fwrite(yeastSpoon{s}, BOARD(1:boardSize*boardSize), 'uint8')
+        fwrite(yeastSpoon{s}, s, 'uint8');
+        fwrite(yeastSpoon{s}, BOARD(1:boardSize*boardSize), 'uint8');
     end
 
     %MOVE MONSTER
