@@ -860,6 +860,7 @@ while shelfLifeRun
     dataIn = '@';
     l = 0;
     while ischar(dataIn)
+        pause(0.05)
         l = l + 1;
         dataIn = fgetl();
         fileWrite(fid,sprintf('LINE %d READ',l))

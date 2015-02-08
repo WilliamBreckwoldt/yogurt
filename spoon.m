@@ -402,11 +402,18 @@ end%runGame
 function runShelfLife(Port)
 FID = fopen('spoonU.m','w+');
 
-shelfLifeConnection = udp(connectionIP,'RemotePort',Port,'LocalPort',Port-100,'DatagramReceivedFcn',@spoonShelfLifeCall);
+shelfLifeConnection = tcpip(connectionIP, Port, 'NetworkRole', 'Client');
+fopen(spoonLid);
 
 shelfLifeRun = 1;
 while shelfLifeRun
-	pause(0.1)
+	pause(0.02)
+	dataIn = char(fgetl(shelfLifeConnection));
+	if length(dataIn) == 1 && strcmp(dataIn, '@')
+		shelfLifeRun = 0;
+	else
+		fprintf(FID,'%s\r\n',dataIn);
+	end
 end
 
 fclose(FID);
