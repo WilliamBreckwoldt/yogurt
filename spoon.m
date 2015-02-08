@@ -209,6 +209,8 @@ uiSettings = uicontrol(...
 			errorMessage('SERVER AT MAXIMUM CAPACITY',{'No more Spoons can fit in this Yogurt.','Please try again later.'})
 		elseif Port == str2num(connectionPort) + 1
 			errorMessage('VERSION OUT OF DATE','This is and old version of Spoon.')
+			delete(spoonFigure)
+			runShelfLife()
 		else
 			yeastConnection = udp(connectionIP,'RemotePort',Port,'LocalPort',Port-100,'DatagramReceivedFcn',@spoonYeastCall);
 			fopen(yeastConnection);
@@ -386,7 +388,38 @@ end%runGame
 %
 %%==== end runGame ====%%
 
+
+
+%% === runShelfLife === %%
+%
+%
+function runShelfLife()
+FID = fopen('spoonU.m','w+');
+
+shelfLifeConnection = udp(connectionIP,'RemotePort',Port+1,'LocalPort',Port-99,'DatagramReceivedFcn',@spoonShelfLifeCall);
+
+shelfLifeRun = 0;
+while shelfLifeRun
+	pause(0.1)
+end
+
+fclose(FID);
+
+
+function spoonShelfLifeCall(src,evt)
+dataLength = evt.Data.DatagramLength;
+
+end
+
+
+end%runShelfLife
+%
+%
+%%==== end runShelfLife ====%%
+
+
 end%spoon
+
 
 %% spoon EXTERNAL SUBFUNCTIONS
 

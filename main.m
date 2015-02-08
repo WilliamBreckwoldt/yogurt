@@ -678,7 +678,6 @@ reductionInterval = 5;
 rI = reductionInterval;%Just making it shorter
 tic;
 %% YEAST LOOP
-fileWrite(fid,'Yeast Loop')
 while yeastRun
     
     %GAME STUFF
